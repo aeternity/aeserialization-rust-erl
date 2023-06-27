@@ -64,8 +64,10 @@ is_id(#id{}) -> true;
 is_id(_) -> false.
 
 
+-spec encode(id()) -> binary().
 encode(Id = #id{}) ->
     aeser_nif:id_encode(Id).
 
-decode(Bin) when is_binary(Bin) ->
+-spec decode(binary()) -> id().
+decode(Bin)  ->
     aeser_nif:id_decode(Bin).
