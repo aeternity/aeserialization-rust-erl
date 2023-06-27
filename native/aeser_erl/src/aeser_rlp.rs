@@ -1,4 +1,4 @@
-use rustler::env::Env;
+use rustler::env::{Env, SavedTerm};
 use rustler::types::{atom::Atom, binary::{Binary, NewBinary}};
 use rustler::error::Error;
 use rustler::*;
@@ -17,32 +17,62 @@ fn decode_rlp(term: &Term) -> NifResult<RLPItem> {
         } else {
             Err(Error::BadArg)
         }
+}
+
+fn encode_rlp<'a>(rlp: &RLPItem, env: Env<'a>) -> Term<'a> {
+    match rlp {
+        RLPItem::ByteArray(bytes) => {
+            let bin = make_bin(env, bytes);
+            bin.to_term(env)
+        },
+        RLPItem::List(rlps) => {
+            rlps.iter().fold(Term::list_new_empty(env), |acc, el| {
+                let encoded = encode_rlp(el, env);
+                acc.list_prepend(encoded)
+            })
+
+        }
+
     }
+}
 
 fn encode_err<'a>(err: DecodingErr, env: Env<'a>) -> Error  {
-    let err_term = match err {
+    match err {
         DecodingErr::Trailing {
-            input: input,
-            undecoded: undecoded,
-            decoded: decoded
+            input,
+            undecoded,
+            decoded
         } => {
             let header = Atom::from_str(env, "trailing").unwrap().to_term(env);
-            let input_term: Binary<'a> = make_bin(env, &input);
-            let undecoded_term: Binary<'a> = make_bin(env, &undecoded);
-            let decoded_term: Binary<'a> = make_bin(env, &decoded.to_bytes());
-            (input_term, undecoded_term, decoded_term).encode::<'a>(env)
+            let input_term: Binary = make_bin(env, &input);
+            let undecoded_term: Binary = make_bin(env, &undecoded);
+            let rlp_erl = encode_rlp(&decoded, env);
+            let err_object = (header, input_term, undecoded_term, rlp_erl);
+            let err_term = err_object.encode(env);
+            // Error::RaiseTerm(Box::new(err_term))
+            Error::Atom("trailing")
         },
-        DecodingErr::LeadingZerosInSize => {
-            Atom::from_str(env, "trailing").unwrap().to_term(env)
-        }
-    };
-    //Error::Term(Box::new(err_term)) // todo wtf
-    Error::BadArg
+        DecodingErr::SizeOverflow{expected, actual, position} => {
+            let header = Atom::from_str(env, "size_overflow").unwrap().to_term(env);
+            let err_object = (header, expected, actual, position);
+            let err_term = err_object.encode(env);
+
+            // Error::RaiseTerm(Box::new(err_term))
+            Error::Atom("size_overflow")
+        },
+        DecodingErr::LeadingZerosInSize{position} => {
+            Error::RaiseAtom("leading_zeros_in_size")
+        },
+        DecodingErr::Empty => {
+            Error::RaiseAtom("empty")
+        },
+    }
 }
 
 
 fn make_bin<'a>(env: Env<'a>, data: &[u8]) -> Binary<'a> {
     let mut outbin = NewBinary::new(env, data.len());
+
     outbin.as_mut_slice().copy_from_slice(data);
     Binary::from(outbin)
 }
@@ -56,16 +86,16 @@ fn encode<'a>(env: Env<'a>, term: Term<'a>) -> NifResult<Binary<'a>> {
 
 
 #[rustler::nif]
-fn decode<'a>(env: Env<'a>, term: Binary) -> NifResult<Binary<'a>> {
+fn decode<'a>(env: Env<'a>, term: Binary) -> NifResult<Term<'a>> {
     let rlp = aeser::rlp::decode(term.as_slice()).map_err(|e| encode_err(e, env))?;
-    let bytes = rlp.to_bytes();
-    Ok(make_bin(env, &bytes))
+    let rlp_erl = encode_rlp(&rlp, env);
+    Ok(rlp_erl)
 }
 
 
 #[rustler::nif]
-fn decode_one<'a>(env: Env<'a>, term: Binary) -> NifResult<(Binary<'a>, Binary<'a>)> {
+fn decode_one<'a>(env: Env<'a>, term: Binary) -> NifResult<(Term<'a>, Binary<'a>)> {
     let (rlp, rest) = aeser::rlp::try_decode(term.as_slice()).map_err(|e| encode_err(e, env))?;
-    let rlp_bytes = rlp.to_bytes();
-    Ok((make_bin(env, &rlp_bytes), make_bin(env, &rest)))
+    let rlp_erl = encode_rlp(&rlp, env);
+    Ok((rlp_erl, make_bin(env, &rest)))
 }
