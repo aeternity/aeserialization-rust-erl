@@ -5,28 +5,22 @@
          decode_one/1
         ]).
 
--include("cargo.hrl").
--on_load(init/0).
--define(NOT_LOADED, not_loaded(?LINE)).
+-export_type([ encodable/0
+             , encoded/0
+             ]).
 
-%%%===================================================================
-%%% NIF
-%%%===================================================================
-
-encode(_Data) ->
-    ?NOT_LOADED.
+-type encodable() :: [encodable()] | binary().
+-type encoded()   :: <<_:8, _:_*8>>.
 
 
-decode(_Data) ->
-    ?NOT_LOADED.
+-spec encode(encodable()) -> encoded().
+encode(X) ->
+    aeser_nif:rlp_encode(X).
 
 
-decode_one(_Data) ->
-    ?NOT_LOADED.
+-spec decode(encoded()) -> encodable().
+decode(Bin) when is_binary(Bin), byte_size(Bin) > 0 ->
+    aeser_nif:rlp_decode(Bin).
 
-
-init() ->
-    ?load_nif_from_crate(aeser_erl, 0).
-
-not_loaded(Line) ->
-    erlang:nif_error({not_loaded, [{module, ?MODULE}, {line, Line}]}).
+decode_one(Bin) ->
+    aeser_nif:rlp_decode_one(Bin).
