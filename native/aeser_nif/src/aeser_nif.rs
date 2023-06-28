@@ -7,20 +7,20 @@ use aeser::*;
 
 #[rustler::nif]
 pub fn rlp_encode<'a>(term: Term<'a>) -> NifResult<ErlBin> {
-    let rlp = term.decode()?;
-    let out = aeser::rlp::encode(&rlp);
+    let rlp: rlp::RlpItem = term.decode()?;
+    let out = rlp.serialize();
     Ok(ErlBin::new(&out))
 }
 
 #[rustler::nif]
 pub fn rlp_decode(bin: Binary) -> NifResult<rlp::RlpItem> {
-    let rlp = aeser::rlp::decode(bin.as_slice());
+    let rlp = aeser::rlp::RlpItem::deserialize(bin.as_slice());
     rlp.map_err(move |e| Error::RaiseTerm(Box::new(e)))
 }
 
 #[rustler::nif]
 pub fn rlp_decode_one(bin: Binary) -> NifResult<(rlp::RlpItem, ErlBin)> {
-    let decoded = aeser::rlp::try_decode(bin.as_slice());
+    let decoded = aeser::rlp::RlpItem::try_deserialize(bin.as_slice());
     let (rlp, rest) = decoded.map_err(move |e| Error::RaiseTerm(Box::new(e)))?;
     Ok((rlp, ErlBin::new(&rest)))
 }
@@ -28,12 +28,12 @@ pub fn rlp_decode_one(bin: Binary) -> NifResult<(rlp::RlpItem, ErlBin)> {
 
 #[rustler::nif]
 pub fn id_encode(id: id::Id) -> NifResult<ErlBin> {
-    Ok(ErlBin::new(&id.encode()))
+    Ok(ErlBin::new(&id.serialize()))
 }
 
 #[rustler::nif]
 pub fn id_decode(bin: ErlBin) -> NifResult<id::Id> {
-    id::Id::decode(&bin.bytes).map_err(|e| Error::RaiseTerm(Box::new(e)))
+    id::Id::deserialize(&bin.bytes).map_err(|e| Error::RaiseTerm(Box::new(e)))
 }
 
 #[rustler::nif]
@@ -84,11 +84,11 @@ pub fn api_encoder_byte_size_for_type(tp: api_encoder::KnownType) -> NifResult<O
 
 #[rustler::nif]
 pub fn contract_code_serialize(code: contract_code::Code) -> NifResult<ErlBin> {
-    Ok(ErlBin::new(&contract_code::serialize(&code)))
+    Ok(ErlBin::new(&code.serialize()))
 }
 
 #[rustler::nif]
 pub fn contract_code_deserialize(bin: ErlBin) -> NifResult<contract_code::Code> {
-    Ok(contract_code::deserialize(&bin.bytes)
+    Ok(contract_code::Code::deserialize(&bin.bytes)
         .map_err(|e| Error::RaiseTerm(Box::new(e)))?)
 }

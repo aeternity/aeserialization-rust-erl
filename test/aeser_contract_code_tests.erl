@@ -2,18 +2,9 @@
 
 -include_lib("eunit/include/eunit.hrl").
 
--define(DUMMY_TYPE_INFO,
-        #{ type_hash => <<"type">>
-         , name => <<"name">>
-         , payable => false
-         , arg_type => <<"arg">>
-         , out_type => <<"out">>
-         }
-       ).
-
 -define(DUMMY_CODE_MAP,
-        #{ byte_code => <<"DUMMY CODE">>
-         , type_info => [?DUMMY_TYPE_INFO]
+        #{ byte_code => <<"DUMMY_CODE">>
+         , type_info => []
          , compiler_version => <<"3.1.4">>
          , source_hash => <<"totally a hash">>
          %% , contract_source => "contract Foo = ..."
