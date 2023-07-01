@@ -12,5 +12,4 @@ crate-type = ["dylib"]
 
 [dependencies]
 rustler = "0.28.0"
-# aeserialization = { git = "https://github.com/aeternity/aeserialization-rust", branch = "develop" }
-aeserialization = { path = "../../../aeserialization-rust" }
+aeserialization = { git = "https://github.com/aeternity/aeserialization-rust", branch = "develop" }

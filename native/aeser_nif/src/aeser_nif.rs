@@ -14,13 +14,13 @@ pub fn rlp_encode<'a>(term: Term<'a>) -> NifResult<ErlBin> {
 
 #[rustler::nif]
 pub fn rlp_decode(bin: Binary) -> NifResult<rlp::RlpItem> {
-    let rlp = aeser::rlp::RlpItem::deserialize(bin.as_slice());
+    let rlp = rlp::RlpItem::deserialize(bin.as_slice());
     rlp.map_err(move |e| Error::RaiseTerm(Box::new(e)))
 }
 
 #[rustler::nif]
 pub fn rlp_decode_one(bin: Binary) -> NifResult<(rlp::RlpItem, ErlBin)> {
-    let decoded = aeser::rlp::RlpItem::try_deserialize(bin.as_slice());
+    let decoded = rlp::RlpItem::try_deserialize(bin.as_slice());
     let (rlp, rest) = decoded.map_err(move |e| Error::RaiseTerm(Box::new(e)))?;
     Ok((rlp, ErlBin::new(&rest)))
 }
