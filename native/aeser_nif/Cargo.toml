@@ -11,5 +11,5 @@ path = "src/lib.rs"
 crate-type = ["dylib"]
 
 [dependencies]
-rustler = "0.28.0"
-aeserialization = { git = "https://github.com/aeternity/aeserialization-rust", branch = "develop" }
+rustler = "0.29.0"
+aeserialization = { git = "https://github.com/aeternity/aeserialization-rust", branch = "master" }
