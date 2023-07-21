@@ -1,4 +1,4 @@
-mod binaries;
+mod erl;
 pub mod aeser_nif;
 
 use aeser_nif::*;
