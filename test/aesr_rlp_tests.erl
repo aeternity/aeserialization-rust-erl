@@ -4,7 +4,7 @@
 %%% @end
 %%%-------------------------------------------------------------------
 
--module(aeser_rlp_tests).
+-module(aesr_rlp_tests).
 
 -include_lib("eunit/include/eunit.hrl").
 
@@ -13,7 +13,7 @@
 -define(BYTE_ARRAY_OFFSET   , 128).
 -define(LIST_OFFSET         , 192).
 
--define(TEST_MODULE, aeser_rlp).
+-define(TEST_MODULE, aesr_rlp).
 
 rlp_one_byte_test() ->
     B = <<42>>,

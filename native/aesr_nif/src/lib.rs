@@ -1,10 +1,10 @@
 mod binaries;
-pub mod aeser_nif;
+pub mod aesr_nif;
 
-use aeser_nif::*;
+use aesr_nif::*;
 
 rustler::init!(
-    "aeser_nif",
+    "aesr_nif",
     [
         rlp_encode,
         rlp_decode,

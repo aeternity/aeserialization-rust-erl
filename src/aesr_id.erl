@@ -1,4 +1,4 @@
--module(aeser_id).
+-module(aesr_id).
 
 -export([ create/2
         , specialize/1
@@ -66,8 +66,8 @@ is_id(_) -> false.
 
 -spec encode(id()) -> binary().
 encode(Id = #id{}) ->
-    aeser_nif:id_encode(Id).
+    aesr_nif:id_encode(Id).
 
 -spec decode(binary()) -> id().
 decode(Bin)  ->
-    aeser_nif:id_decode(Bin).
+    aesr_nif:id_decode(Bin).

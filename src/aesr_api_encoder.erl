@@ -1,4 +1,4 @@
--module(aeser_api_encoder).
+-module(aesr_api_encoder).
 
 -export([encode/2,
          decode/1,
@@ -40,24 +40,24 @@
 -type payload() :: binary().
 -type encoded() :: binary().
 
--spec encode(known_type(), payload() | aeser_id:id()) -> encoded().
+-spec encode(known_type(), payload() | aesr_id:id()) -> encoded().
 encode(id_hash, Payload) ->
-    aeser_nif:api_encoder_encode_id(Payload);
+    aesr_nif:api_encoder_encode_id(Payload);
 encode(Type, Payload) ->
-    aeser_nif:api_encoder_encode_data(Type, Payload).
+    aesr_nif:api_encoder_encode_data(Type, Payload).
 
 -spec decode(binary()) -> {known_type(), payload()}.
 decode(Bin) ->
-    aeser_nif:api_encoder_decode(Bin).
+    aesr_nif:api_encoder_decode(Bin).
 
--spec safe_decode(extended_type(), encoded()) -> {'ok', payload() | aeser_id:id()}
+-spec safe_decode(extended_type(), encoded()) -> {'ok', payload() | aesr_id:id()}
                                                      | {'error', atom()}.
 safe_decode({id_hash, AllowedTypes}, Enc) ->
-    aeser_nif:api_encoder_decode_id(AllowedTypes, Enc);
+    aesr_nif:api_encoder_decode_id(AllowedTypes, Enc);
 safe_decode(block_hash, Enc) ->
-    aeser_nif:api_encoder_decode_blockhash(Enc);
+    aesr_nif:api_encoder_decode_blockhash(Enc);
 safe_decode(Type, Enc) ->
-    try aeser_nif:api_encoder_safe_decode(Enc) of
+    try aesr_nif:api_encoder_safe_decode(Enc) of
         {Type, Dec} ->
             {ok, Dec};
         {error, Err} = E ->
@@ -72,4 +72,4 @@ safe_decode(Type, Enc) ->
 -spec byte_size_for_type(known_type()) -> non_neg_integer() | not_applicable.
 
 byte_size_for_type(Type) ->
-    aeser_nif:api_encoder_byte_size_for_type(Type).
+    aesr_nif:api_encoder_byte_size_for_type(Type).

@@ -1,4 +1,4 @@
--module(aeser_contract_code_tests).
+-module(aesr_contract_code_tests).
 
 -include_lib("eunit/include/eunit.hrl").
 
@@ -11,5 +11,5 @@
          , payable => true} ).
 
 vsn_3_test() ->
-    aeser_contract_code:deserialize(
-        aeser_contract_code:serialize(?DUMMY_CODE_MAP)).
+    aesr_contract_code:deserialize(
+        aesr_contract_code:serialize(?DUMMY_CODE_MAP)).

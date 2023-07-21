@@ -1,6 +1,6 @@
 -cargo_header_version 1.
 -ifndef(CARGO_LOAD_APP).
--define(CARGO_LOAD_APP,aeser_nif).
+-define(CARGO_LOAD_APP,aesr_nif).
 -endif.
 -ifndef(CARGO_HRL).
 -define(CARGO_HRL, 1).

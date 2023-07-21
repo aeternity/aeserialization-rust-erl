@@ -1,4 +1,4 @@
-# NIF for aeser_erl
+# NIF for aesr_erl
 
 ## To compile the NIF in Erlang:
 
@@ -7,7 +7,7 @@ Add the following lines to your `rebar.config` file:
 {plugins, [rebar3_rustler]}.
 
 {cargo_opts, [
-    {src_dir, "native/aeser_erl"}
+    {src_dir, "native/aesr_erl"}
 ]}.
 
 {provider_hooks, [

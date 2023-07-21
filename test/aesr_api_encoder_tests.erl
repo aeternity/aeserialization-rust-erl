@@ -2,11 +2,11 @@
 %%% @copyright (C) 2018, Aeternity Anstalt
 %%%-------------------------------------------------------------------
 
--module(aeser_api_encoder_tests).
+-module(aesr_api_encoder_tests).
 
 -include_lib("eunit/include/eunit.hrl").
 
--define(TEST_MODULE, aeser_api_encoder).
+-define(TEST_MODULE, aesr_api_encoder).
 -define(TYPES, [ {key_block_hash    , 32}
                , {micro_block_hash  , 32}
                , {block_tx_hash     , 32}

@@ -1,4 +1,4 @@
--module(aeser_nif).
+-module(aesr_nif).
 
 -export([rlp_encode/1,
          rlp_decode/1,
@@ -28,7 +28,7 @@
 -define(NOT_LOADED, not_loaded(?LINE)).
 
 init() ->
-    ?load_nif_from_crate(aeser_nif, 0).
+    ?load_nif_from_crate(aesr_nif, 0).
 
 not_loaded(Line) ->
     erlang:nif_error({not_loaded, [{module, ?MODULE}, {line, Line}]}).

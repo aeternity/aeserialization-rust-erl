@@ -1,4 +1,4 @@
--module(aeser_rlp).
+-module(aesr_rlp).
 
 -export([encode/1,
          decode/1,
@@ -15,12 +15,12 @@
 
 -spec encode(encodable()) -> encoded().
 encode(X) ->
-    aeser_nif:rlp_encode(X).
+    aesr_nif:rlp_encode(X).
 
 
 -spec decode(encoded()) -> encodable().
 decode(Bin) when is_binary(Bin), byte_size(Bin) > 0 ->
-    aeser_nif:rlp_decode(Bin).
+    aesr_nif:rlp_decode(Bin).
 
 decode_one(Bin) ->
-    aeser_nif:rlp_decode_one(Bin).
+    aesr_nif:rlp_decode_one(Bin).
