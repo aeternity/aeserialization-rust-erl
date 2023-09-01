@@ -84,10 +84,10 @@ encode_decode_test_() ->
                     Key = <<42:ByteSize/unit:8>>,
                     EncodedKey = ?TEST_MODULE:encode(Type, Key),
                     <<_PartOfPrefix:1/unit:8, RestOfKey/binary>> = EncodedKey,
-                    {error, missing_prefix} = ?TEST_MODULE:safe_decode(Type, RestOfKey),
+                    {error, invalid_prefix} = ?TEST_MODULE:safe_decode(Type, RestOfKey),
 
                     <<_PrefixWithoutDelimiter:2/unit:8, RestOfKey1/binary>> = EncodedKey,
-                    {error, missing_prefix} = ?TEST_MODULE:safe_decode(Type, RestOfKey1),
+                    {error, invalid_prefix} = ?TEST_MODULE:safe_decode(Type, RestOfKey1),
 
                     <<_WholePrefix:3/unit:8, RestOfKey2/binary>> = EncodedKey,
                     {error, missing_prefix} = ?TEST_MODULE:safe_decode(Type, RestOfKey2)

@@ -51,7 +51,7 @@ decode(Bin) ->
     aeser_nif:api_encoder_decode(Bin).
 
 -spec safe_decode(extended_type(), encoded()) -> {'ok', payload() | aeser_id:id()}
-                                                     | {'error', atom()}.
+                                               | {'error', atom()}.
 safe_decode({id_hash, AllowedTypes}, Enc) ->
     aeser_nif:api_encoder_decode_id(AllowedTypes, Enc);
 safe_decode(block_hash, Enc) ->
@@ -60,7 +60,7 @@ safe_decode(Type, Enc) ->
     try aeser_nif:api_encoder_safe_decode(Enc) of
         {Type, Dec} ->
             {ok, Dec};
-        {error, Err} = E ->
+        {error, _Err} = E ->
             E;
         {_, _} ->
             {error, invalid_prefix}

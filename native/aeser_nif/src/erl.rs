@@ -38,7 +38,7 @@ where
     T: MockEncoder,
 {
     fn mock_encode<'a>(&self, env: Env<'a>) -> Term<'a> {
-        self.into_iter()
+        self.iter()
             .map(|x| x.mock_encode(env))
             .collect::<Vec<_>>()
             .encode(env)
@@ -59,7 +59,7 @@ where
 impl MockEncoder for Bytes {
     fn mock_encode<'b>(&self, env: Env<'b>) -> Term<'b> {
         let mut bin = NewBinary::new(env, self.len());
-        bin.as_mut_slice().copy_from_slice(&self);
+        bin.as_mut_slice().copy_from_slice(self);
         Term::from(bin)
     }
 }
@@ -80,7 +80,7 @@ impl<'a> MockDecoder<'a> for Bytes {
 impl MockEncoder for rlp::RlpItem {
     fn mock_encode<'a>(&self, env: Env<'a>) -> Term<'a> {
         match self {
-            rlp::RlpItem::ByteArray(bytes) => bytes.encode(env),
+            rlp::RlpItem::ByteArray(bytes) => bytes.mock_encode(env),
             rlp::RlpItem::List(rlps) => rlps.iter().rfold(Term::list_new_empty(env), |acc, el| {
                 acc.list_prepend(el.mock_encode(env))
             }),

@@ -5,7 +5,7 @@ use crate::erl::Erl;
 use aeser::*;
 
 #[rustler::nif]
-pub fn rlp_encode<'a>(rlp: Erl<rlp::RlpItem>) -> NifResult<Erl<Bytes>> {
+pub fn rlp_encode(rlp: Erl<rlp::RlpItem>) -> NifResult<Erl<Bytes>> {
     let out = rlp.val.serialize();
     Ok(Erl{val: out})
 }
@@ -23,7 +23,6 @@ pub fn rlp_decode_one(bin: Erl<Bytes>) -> NifResult<(Erl<rlp::RlpItem>, Erl<Byte
     let (rlp, rest) = decoded.map_err(move |e| Error::RaiseTerm(Box::new(Erl{val: e})))?;
     Ok( (Erl{val: rlp}, Erl{val: rest.to_vec()}) )
 }
-
 
 #[rustler::nif]
 pub fn id_encode(id: Erl<id::Id>) -> NifResult<Erl<Bytes>> {
@@ -47,7 +46,6 @@ pub fn api_encoder_encode_id(id: Erl<id::Id>) -> NifResult<Erl<Bytes>> {
     let encoded = api_encoder::encode_id(&id.val);
     Ok(Erl{val: encoded.as_bytes().to_vec()})
 }
-
 
 #[rustler::nif]
 pub fn api_encoder_decode(data: String) -> NifResult<(Erl<api_encoder::KnownType>, Erl<Bytes>)> {
